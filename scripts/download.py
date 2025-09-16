@@ -7,7 +7,7 @@ from pathlib import Path
 
 CORPUS = {
     # prose, english
-    1400:   'great_expectations',
+    1400:   'great_expectations',   # wierd newlines
     1023:   'bleak_house',
     98:     'a_tale_of_two_cities',
     766:    'david_copperfield',
@@ -36,8 +36,6 @@ CORPUS = {
     228:    'the_aeneid',       # indented
     1322:   'leaves_of_grass',  # indented
     8800:   'the_divine_comedy',
-
-    # mixed
     100:    'shakespeare_complete',
 
     # philosophy
@@ -56,6 +54,7 @@ CORPUS = {
     29765:  'websters_unabridged_dictionary'
 }
 
+VERSE_IDS = [26, 1727, 6130, 228, 1322, 8800, 100]
 
 DATA_DIR = Path(__file__).parent.parent / 'data'
 
@@ -78,6 +77,10 @@ def clean_text_by_id(id):
     else:
         cleaned = text  # Just use the whole thing if we can't find markers
         print("warning: cleaning didnt rm gutenberg copyright headers/footers")
+
+    # remove artificial linebreaks in prose
+    if id not in VERSE_IDS:
+        cleaned = re.sub(r'\n(?!\n)', ' ', cleaned)
     
     with open(f'{DATA_DIR}/processed/{id}.txt', 'w') as f:
         f.write(cleaned)
@@ -100,6 +103,7 @@ def ensure_corpus_texts(ids):
 def main():
     ids = list(CORPUS.keys())
     ensure_corpus_texts(ids)
+    clean_text_by_id(1400)
 
 if __name__ == "__main__":
     main()

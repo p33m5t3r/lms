@@ -1,2 +1,4 @@
 requests
 ipython
+einops
+nvidia-ml-py
